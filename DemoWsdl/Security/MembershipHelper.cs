@@ -2,33 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using DemoWsdl.Dto;
 using DemoWsdl.Extensions;
 using DemoWsdl.Helpers;
 using DemoWsdl.IICUTechServRef;
-using DemoWsdl.Models;
+using DemoWsdl.Services;
+using DemoWsdl.ViewModels;
 
 namespace DemoWsdl.Security
 {
     public static class MembershipHelper
     {
-
         public const string SESSION_KEY = "_session_key_";
+        private static readonly UserService _service = new UserService();
 
-        public static bool LogIn(LoginModel model, string ip, out string error)
+        public static bool LogIn(LoginModel model, string ip, ref string error)
         {
             try
             {
-                using (var client = new ICUTechClient())
+                var result = _service.GetByLogin(model.UserName, model.Password, ip, ref error);
+
+                Current = new UserData
                 {
-                    WcfConfigure.Authorize(client);
-
-                    var result = client.Login(model.UserName, model.Password, ip);
-                    var entity = result.Decode<CustomerInfo>();
-
-                    HttpContext.Current.Session[SESSION_KEY] = entity;
-                }
-
-                error = "";
+                    Id = result.EntityId,
+                    FullName = result.FirstName + " " + result.LastName,
+                    Password = model.Password,
+                    UserName = model.UserName
+                };
 
                 return true;
             }
@@ -37,46 +37,45 @@ namespace DemoWsdl.Security
                 error = e.Message;
             }
 
-            HttpContext.Current.Session[SESSION_KEY] = null;
+            Current = null;
 
             return false;
         }
 
-        public static bool Register(RegisterModel model, string ip, out string error)
+        public static int Register(RegisterModel model, string ip, ref string error)
         {
+
             try
             {
-                using (var client = new ICUTechClient())
-                {
-                    WcfConfigure.Authorize(client);
+                var result = _service.NewCustomer(model.Email, model.Password, model.FirstName, model.LastName, model.Mobile, model.Country, ip, ref error);
 
-                    var result = client.RegisterNewCustomer(model.Email, model.Password, model.FirstName, model.LastName, model.Mobile, model.Country ?? 1, 1, ip);
-                    var entity = result.Decode<CustomerInfo>();
-
-                    HttpContext.Current.Session[SESSION_KEY] = entity;
-                }
-
-                error = "";
-
-                return true;
+                return result;
             }
             catch (Exception e)
             {
                 error = e.Message;
             }
 
-            HttpContext.Current.Session[SESSION_KEY] = null;
-
-            return false;
+            return -1;
         }
 
-        public static CustomerInfo Current => (CustomerInfo)HttpContext.Current.Session[SESSION_KEY];
+        public static UserData Current
+        {
+            get
+            {
+                return (UserData)HttpContext.Current.Session[SESSION_KEY];
+            }
+            set
+            {
+                HttpContext.Current.Session[SESSION_KEY] = value;
+            }
+        }
 
-        public static bool IsAuthenticated => HttpContext.Current.Session[SESSION_KEY] != null;
+        public static bool IsAuthenticated => Current != null;
 
         public static void LogOff()
         {
-            HttpContext.Current.Session.Remove(SESSION_KEY);
+            Current = null;
         }
 
     }

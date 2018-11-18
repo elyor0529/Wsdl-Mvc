@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace DemoWsdl.Security
+﻿namespace DemoWsdl.Dto
 {
-    [Serializable]
-    public class CustomerInfo
+    public class CustomerInfoResponse
     {
-        public int EntityId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Company { get; set; }
@@ -19,9 +15,11 @@ namespace DemoWsdl.Security
         public int EmailConfirm { get; set; }
         public int MobileConfirm { get; set; }
         public int CountryID { get; set; }
-        public int Status { get; set; }
-        public string lid { get; set; }
-        public string FTPHost { get; set; }
-        public int FTPPort { get; set; }
+        public string Fax { get; set; }
+        public string Birthday { get; set; }
+        public string State { get; set; }
+        public int PassportConfirmed { get; set; }
+        public int CardConfirmed { get; set; }
+        public int aID { get; set; }
     }
 }

@@ -5,13 +5,16 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using DemoWsdl.IICUTechServRef;
-using DemoWsdl.Models;
 using DemoWsdl.Security;
+using DemoWsdl.Services;
+using DemoWsdl.ViewModels;
 
 namespace DemoWsdl.Controllers
 {
     public class AccountController : Controller
     {
+        private static readonly UserService _service = new UserService();
+
         public ActionResult SignIn()
         {
             var model = new LoginModel();
@@ -32,7 +35,7 @@ namespace DemoWsdl.Controllers
             }
 
             var error = "";
-            if (!MembershipHelper.LogIn(model, Request.UserHostAddress, out error) && !string.IsNullOrWhiteSpace(error))
+            if (!MembershipHelper.LogIn(model, Request.UserHostAddress, ref error))
             {
                 ModelState.AddModelError("", error);
 
@@ -62,12 +65,23 @@ namespace DemoWsdl.Controllers
             }
 
             var error = "";
-            if (!MembershipHelper.Register(model, Request.UserHostAddress, out error) && !string.IsNullOrWhiteSpace(error))
+            var entityId = MembershipHelper.Register(model, Request.UserHostAddress, ref error);
+            if (entityId == -1)
             {
                 ModelState.AddModelError("", error);
 
                 return View(model);
             }
+
+            var entity = _service.GetByEntity(model.Email, model.Password, entityId, ref error);
+
+            MembershipHelper.Current = new UserData
+            {
+                Id = entityId,
+                FullName = entity.FirstName + " " + entity.LastName,
+                Password = model.Password,
+                UserName = model.Email
+            };
 
             return RedirectToAction("Index", "User");
         }

@@ -5,15 +5,19 @@ using System.Web;
 using System.Web.Mvc;
 using DemoWsdl.Filters;
 using DemoWsdl.Security;
+using DemoWsdl.Services;
 
 namespace DemoWsdl.Controllers
 {
     [SessionAuthorization]
     public class UserController : Controller
     {
+        private static readonly UserService _service = new UserService();
+
         public ActionResult Index()
         {
-            var model = MembershipHelper.Current;
+            var error = "";
+            var model = _service.GetByEntity(MembershipHelper.Current.UserName, MembershipHelper.Current.Password, MembershipHelper.Current.Id, ref error);
 
             return View(model);
         }
