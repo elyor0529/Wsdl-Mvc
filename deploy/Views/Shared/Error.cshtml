@@ -1,13 +1,13 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
-</head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
-</body>
-</html>
+﻿@model string
+@{
+    ViewBag.Title = "Error";
+}
+
+@if (string.IsNullOrWhiteSpace(Model))
+{
+    <h2 class="text-danger">An error occurred while processing your request.</h2>
+}
+else
+{
+    <h2 class="text-danger">@Model</h2>
+}
