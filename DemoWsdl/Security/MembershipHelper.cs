@@ -18,57 +18,53 @@ namespace DemoWsdl.Security
 
         public static bool LogIn(LoginModel model, string ip, ref string error)
         {
-            try
-            {
-                var result = _service.GetByLogin(model.UserName, model.Password, ip, ref error);
+            var result = _service.GetByLogin(model.UserName, model.Password, ip, ref error);
 
-                Current = new UserData
-                {
-                    Id = result.EntityId,
-                    FullName = result.FirstName + " " + result.LastName,
-                    Password = model.Password,
-                    UserName = model.UserName
-                };
-
-                return true;
-            }
-            catch (Exception e)
+            if (!string.IsNullOrWhiteSpace(error))
             {
-                error = e.Message;
+                Current = null;
+
+                return false;
             }
 
-            Current = null;
+            Current = new UserData
+            {
+                Id = result.EntityId,
+                FullName = result.FirstName + " " + result.LastName,
+                Password = model.Password,
+                UserName = model.UserName
+            };
 
-            return false;
+            return true;
         }
 
-        public static int Register(RegisterModel model, string ip, ref string error)
+        public static bool Register(RegisterModel model, string ip, ref string error)
         {
+            var entityId = _service.NewCustomer(model.Email, model.Password, model.FirstName, model.LastName, model.Mobile, model.Country, ip, ref error);
 
-            try
+            if (!string.IsNullOrWhiteSpace(error))
+                return false;
+
+            var entity = _service.GetByEntity(model.Email, model.Password, entityId, ref error);
+
+            if (!string.IsNullOrWhiteSpace(error))
+                return false;
+
+            Current = new UserData
             {
-                var result = _service.NewCustomer(model.Email, model.Password, model.FirstName, model.LastName, model.Mobile, model.Country, ip, ref error);
+                Id = entityId,
+                FullName = entity.FirstName + " " + entity.LastName,
+                Password = model.Password,
+                UserName = model.Email
+            };
 
-                return result;
-            }
-            catch (Exception e)
-            {
-                error = e.Message;
-            }
-
-            return -1;
+            return true;
         }
 
         public static UserData Current
         {
-            get
-            {
-                return (UserData)HttpContext.Current.Session[SESSION_KEY];
-            }
-            set
-            {
-                HttpContext.Current.Session[SESSION_KEY] = value;
-            }
+            get => (UserData)HttpContext.Current.Session[SESSION_KEY];
+            set => HttpContext.Current.Session[SESSION_KEY] = value;
         }
 
         public static bool IsAuthenticated => Current != null;

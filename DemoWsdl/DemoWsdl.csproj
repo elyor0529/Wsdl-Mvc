@@ -160,9 +160,9 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="App_Data\readme.docx" />
+    <None Include="Properties\PublishProfiles\locale.pubxml" />
     <None Include="Service References\IICUTechServRef\configuration91.svcinfo" />
     <None Include="Service References\IICUTechServRef\configuration.svcinfo" />
-    <Content Include="readme.html" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\holder.min.js" />
     <Content Include="Scripts\jquery-slim.min.js" />
@@ -253,7 +253,6 @@
     <Content Include="Views\Account\SignUp.cshtml" />
     <Content Include="Views\User\_Details.cshtml" />
     <Content Include="Views\Shared\_Login.cshtml" />
-    <Content Include="Views\User\View.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

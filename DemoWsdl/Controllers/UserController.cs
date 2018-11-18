@@ -19,6 +19,11 @@ namespace DemoWsdl.Controllers
             var error = "";
             var model = _service.GetByEntity(MembershipHelper.Current.UserName, MembershipHelper.Current.Password, MembershipHelper.Current.Id, ref error);
 
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                return View("Error", error);
+            }
+
             return View(model);
         }
     }

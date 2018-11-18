@@ -1,0 +1,14 @@
+﻿@model CustomerInfoResponse
+@{
+    ViewBag.Title = "Profile";
+}
+
+<h2>
+    Hello @(Model.FirstName) @(Model.LastName)!
+</h2>
+
+<hr class="mb-4"/>
+
+<div class="row">
+    @Html.Partial("_Details")
+</div>

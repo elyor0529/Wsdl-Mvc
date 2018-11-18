@@ -65,23 +65,12 @@ namespace DemoWsdl.Controllers
             }
 
             var error = "";
-            var entityId = MembershipHelper.Register(model, Request.UserHostAddress, ref error);
-            if (entityId == -1)
+            if (!MembershipHelper.Register(model, Request.UserHostAddress, ref error))
             {
                 ModelState.AddModelError("", error);
 
                 return View(model);
             }
-
-            var entity = _service.GetByEntity(model.Email, model.Password, entityId, ref error);
-
-            MembershipHelper.Current = new UserData
-            {
-                Id = entityId,
-                FullName = entity.FirstName + " " + entity.LastName,
-                Password = model.Password,
-                UserName = model.Email
-            };
 
             return RedirectToAction("Index", "User");
         }
