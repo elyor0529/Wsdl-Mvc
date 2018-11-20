@@ -225,7 +225,6 @@
     <Compile Include="ViewModels\RegisterModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\readme.txt" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\form-validation.css" />
     <Content Include="Content\images\bootstrap-solid.svg" />
@@ -237,7 +236,6 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Data\readme.docx" />
     <None Include="Properties\PublishProfiles\DemoMvc20181120124855.pubxml" />
     <None Include="Service References\IICUTechServRef\configuration91.svcinfo" />
     <None Include="Service References\IICUTechServRef\configuration.svcinfo" />
