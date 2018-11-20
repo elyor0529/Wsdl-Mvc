@@ -13,10 +13,6 @@ And mobile speed should be 3 second maximum,  https://testmysite.withgoogle.com/
 
 -------------------------------------------------
 
-Test login:
-User: elyor2@test.com
-Password: web@1234   
+Test login: 
 
-Azure portal:
-http://demomvc20181120124855.azurewebsites.net/
-
+elyor2@test.com / web@1234
